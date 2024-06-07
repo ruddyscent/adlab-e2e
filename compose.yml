@@ -1,0 +1,63 @@
+services:
+  carla:
+    # image: carlasim/carla:0.9.15
+    build: 
+      context: .
+      dockerfile: Dockerfile-carla
+    ipc: host
+    privileged: true
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    volumes:
+      - ./home:/workspace
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /dev/dri:/dev/dri
+      - ${HOME}:${HOME}
+      - /${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
+      - /etc/group:/etc/group:ro
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/shadow:/etc/shadow:ro
+      - /etc/sudoers.d:/etc/sudoers.d:ro
+    user: ${UID}
+        # user: root
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1 # Fix a bug with QT
+      - SDL_VIDEODRIVER=x11
+      - NVIDIA_DRIVER_CAPABILITIES=all
+        #      - SDL_VIDEODRIVER=offscreen
+    network_mode: "host"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['${CARLA_GPU_DEVICES}']
+              capabilities: [compute, utility, graphics, display]
+    working_dir: /workspace
+    command: ["bash", "/home/carla/CarlaUE4.sh", "-carla-rpc-port=${CARLA_RPC_PORT:-2000}", "-carla-streaming-port=${CARLA_RPC_PORT:-2001}"]
+    
+
+  jupyter:
+    # image: quay.io/jupyter/pytorch-notebook:cuda11-python-3.11.9
+    build: 
+      context: .
+      dockerfile: Dockerfile-jupyter
+    ipc: host
+    privileged: true
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    volumes:
+      - ./home:/home
+    network_mode: "host"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['${JUPYTER_GPU_DEVICES}']
+              capabilities: [compute,utility,graphics,display]
+    working_dir: /home
+    command: jupyter notebook --ip=0.0.0.0 --port="${JUPYTER_PORT:-8888}" --no-browser --allow-root --NotebookApp.token="${JUPYTER_TOKEN:-letmein}" --NotebookApp.password="" --notebook-dir=/home
