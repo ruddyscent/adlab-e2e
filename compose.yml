@@ -37,7 +37,6 @@ services:
               capabilities: [compute, utility, graphics, display]
     working_dir: /workspace
     command: ["bash", "/home/carla/CarlaUE4.sh", "-carla-rpc-port=${CARLA_RPC_PORT:-2000}", "-carla-streaming-port=${CARLA_RPC_PORT:-2001}"]
-    
 
   jupyter:
     # image: quay.io/jupyter/pytorch-notebook:cuda11-python-3.11.9
@@ -61,3 +60,22 @@ services:
               capabilities: [compute,utility,graphics,display]
     working_dir: /home
     command: jupyter notebook --ip=0.0.0.0 --port="${JUPYTER_PORT:-8888}" --no-browser --allow-root --NotebookApp.token="${JUPYTER_TOKEN:-letmein}" --NotebookApp.password="" --notebook-dir=/home
+
+  ros:
+    # image: osrf/ros:humble-simulation
+    build:
+      context: .
+      dockerfile: Dockerfile-ros
+    network_mode: "host"
+    tty: true
+    
+#  talker:
+#    image: osrf/ros:humble-desktop
+#    command: ros2 run demo_nodes_cpp talker
+#
+#  listener:
+#    image: osrf/ros:humble-desktop
+#    command: ros2 run demo_nodes_cpp listener
+#    depends_on:
+#      - talker
+
