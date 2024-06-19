@@ -1,4 +1,4 @@
-ARG ROS_VER=iron
+ARG ROS_VER=humble
 FROM osrf/ros:${ROS_VER}-simulation
 
 ARG ROS_VER
@@ -36,6 +36,9 @@ RUN cd /opt/ros/${ROS_VER}/include/tf2_eigen/ \
 
 RUN mkdir -p /opt/carla-ros-bridge && cd /opt/carla-ros-bridge \
  && git clone --recurse-submodules https://github.com/carla-simulator/ros-bridge.git src/ros-bridge
+
+RUN cd /opt/carla-ros-bridge/src/ros-bridge/carla_ros_bridge/src/carla_ros_bridge \
+ && sed -i "s/0.9.13/0.9.15/g" CARLA_VERSION
 
 # RUN source /opt/ros/${ROS_VER}/setup.bash
 
