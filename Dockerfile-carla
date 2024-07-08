@@ -8,16 +8,13 @@ USER root
 # Let us install tzdata painlessly
 ENV DEBIAN_FRONTEND=noninteractive
 
-# # Remove the outdated signing key
-# RUN apt-key del 7fa2af80
-# 
-# # Install the new cuda-keyring package
-# RUN wget https://developer.download.nvidia.com/compute/cuda/repos/$distro/$arch/cuda-keyring_1.0-1_all.deb \
-#     dpkg -i cuda-keyring_1.0-1_all.deb
+# RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/3bf863cc.pub
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     vulkan-utils \
     neovim \
     libjpeg8 \
-    libtiff5
+    libtiff5 \
+    xdg-user-dirs \
+    apt-utils
 
