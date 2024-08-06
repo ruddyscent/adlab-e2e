@@ -16,5 +16,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libjpeg8 \
     libtiff5 \
     xdg-user-dirs \
-    apt-utils
+    apt-utils \
+    git \
+    python3-pip \
+    python3-setuptools 
 
+# Scenario Runner
+COPY requirements-scenario_runner.txt /tmp/
+
+RUN pip3 install --upgrade pip \
+ && pip3 install -r /tmp/requirements-scenario_runner.txt
+
+RUN cd /opt \
+ && git clone --branch v${CARLA_VER} --single-branch https://github.com/carla-simulator/scenario_runner.git
+
+ENV CARLA_ROOT=/home/carla
+ENV SCENARIO_RUNNER_ROOT=/opt/scenario_runner
+ENV PYTHONPATH=$PYTHONPATH:${CARLA_ROOT}/PythonAPI/carla/dist/carla-${CARLA_VER}-py3.7-linux-x86_64.egg
+ENV PYTHONPATH=$PYTHONPATH:${CARLA_ROOT}/PythonAPI/carla
