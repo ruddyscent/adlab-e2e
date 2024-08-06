@@ -89,35 +89,4 @@ services:
     network_mode: "host"
     working_dir: /workspace
     tty: true
-    
-  leaderboard:
-    build:
-      context: .
-      dockerfile: Dockerfile-leaderboard
-    ipc: host
-    privileged: true
-    volumes:
-      - ./home:/workspace
-      - /tmp/.X11-unix:/tmp/.X11-unix
-      - /dev/dri:/dev/dri
-      - ${HOME}:${HOME}
-      - /${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
-      - /etc/group:/etc/group:ro
-      - /etc/passwd:/etc/passwd:ro
-      - /etc/shadow:/etc/shadow:ro
-      - /etc/sudoers.d:/etc/sudoers.d:ro
-    #    user: ${UID}
-    environment:
-      - DISPLAY=${DISPLAY}
-      - QT_X11_NO_MITSHM=1 # Fix a bug with QT
-      - QT_QPA_PLATFORM=xcb
-      - SDL_VIDEODRIVER=x11
-        #      - SDL_VIDEODRIVER=offscreen
-    network_mode: "host"
-    working_dir: /workspace
-    tty: true
-
-
-
-
 
