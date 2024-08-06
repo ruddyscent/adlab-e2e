@@ -26,6 +26,6 @@ RUN cd /opt \
 
 # Get the Scenario Runner
 RUN cd /opt \
- && git clone --single-branch https://github.com/carla-simulator/scenario_runner.git \
+ && git clone -b v0.9.15 --single-branch https://github.com/carla-simulator/scenario_runner.git \
  && echo "SCENARIO_RUNNER_ROOT=/opt/scenario_runner" >> ~/.bashrc
 
