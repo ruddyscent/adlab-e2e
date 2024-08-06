@@ -1,5 +1,5 @@
 ARG ROS_VER=humble
-FROM osrf/ros:${ROS_VER}-simulation
+FROM ros:${ROS_VER}
 
 ARG ROS_VER
 ENV ROS_VER ${ROS_VER}
@@ -10,6 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     neovim \
     python3-pip \
+    python-is-python3 \
     apt-utils 
 
 # Copy requirements file
@@ -17,7 +18,7 @@ COPY requirements-ros.txt /tmp/
 
 # Install Python dependencies
 RUN pip install --upgrade pip \
- && pip install -r /tmp/requirements-ros.txt
+ && /usr/local/bin/pip install -r /tmp/requirements-ros.txt
 
 # ROS Bridge Installation
 
@@ -27,7 +28,7 @@ RUN cd /opt/ros/${ROS_VER}/include/tf2_eigen/ \
  && cp tf2_eigen/* ./
 
 RUN mkdir -p /opt/carla-ros-bridge && cd /opt/carla-ros-bridge \
- && git clone --recurse-submodules https://github.com/carla-simulator/ros-bridge.git src/ros-bridge
+ && git clone --recurse-submodules -b leaderboard-2.0 --single-branch https://github.com/carla-simulator/ros-bridge.git src/ros-bridge
 
 RUN cd /opt/carla-ros-bridge/src/ros-bridge/carla_ros_bridge/src/carla_ros_bridge \
  && sed -i "s/0.9.13/0.9.15/g" CARLA_VERSION
