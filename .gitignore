@@ -1,6 +1,8 @@
 ST-P3
 *.ckpt
 transfuser
+*.tar.gz
+run_leaderboard.sh
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,visualstudiocode,ros2,git,windows,macos,vim,dotenv
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,jupyternotebooks,visualstudiocode,ros2,git,windows,macos,vim,dotenv
