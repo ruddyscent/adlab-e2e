@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    ubuntu-mono 
 
 # Copy requirements file
-COPY requirements-jupyter.txt /tmp/
+COPY jupyter-requirements.txt /tmp/
 
 # Change permissions of pip cache directory (if necessary)
 # RUN mkdir -p /home/jovyan/.cache/pip \
@@ -27,6 +27,5 @@ COPY requirements-jupyter.txt /tmp/
 
 # Install Python dependencies
 RUN pip install --upgrade pip \
- && /usr/local/bin/pip install -r /tmp/requirements-jupyter.txt
+ && /usr/local/bin/pip install -r /tmp/jupyter-requirements.txt
 
-  

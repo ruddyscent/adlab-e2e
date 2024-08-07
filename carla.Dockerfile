@@ -23,19 +23,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ubuntu-mono
 
 # Scenario Runner
-COPY requirements-scenario_runner.txt /tmp/
+COPY -scenario_runner-requirements.txt /tmp/
 
 RUN pip3 install --upgrade pip \
- && pip3 install -r /tmp/requirements-scenario_runner.txt
+ && /usr/local/bin/pip3 install -r /tmp/scenario_runner-requirements.txt
 
 RUN cd /opt \
  && git clone -b leaderboard-2.0 --single-branch https://github.com/carla-simulator/scenario_runner.git
 
 # Leaderboard
-COPY requirements-leaderboard.txt /tmp/
+COPY leaderboard-requirements.txt /tmp/
 
 RUN pip3 install --upgrade pip \
- && pip3 install -r /tmp/requirements-leaderboard.txt
+ && /usr/bin/pip3 install -r /tmp/leaderboard-requirements.txt
 
 RUN cd /opt \
  && git clone -b leaderboard-2.0 --single-branch https://github.com/carla-simulator/leaderboard.git
