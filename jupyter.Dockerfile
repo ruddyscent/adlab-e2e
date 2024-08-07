@@ -6,9 +6,17 @@ FROM nvcr.io/nvidia/pytorch:24.05-py3
 # Let us install tzdata painlessly
 # ENV DEBIAN_FRONTEND=noninteractive
 
-# RUN apt-get update && apt-get install -y --no-install-recommends \
-#    neovim \
-#    python3-pip
+RUN apt-get update && apt-get install -y --no-install-recommends \
+   neovim \
+   python3-pip \
+   python3-setuptools \
+   vulkan-utils \
+   libjpeg8 \
+   libtiff5 \
+   xdg-user-dirs \
+   apt-utils \
+   git \
+   ubuntu-mono 
 
 # Copy requirements file
 COPY requirements-jupyter.txt /tmp/
@@ -19,4 +27,6 @@ COPY requirements-jupyter.txt /tmp/
 
 # Install Python dependencies
 RUN pip install --upgrade pip \
- && pip install -r /tmp/requirements-jupyter.txt
+ && /usr/local/bin/pip install -r /tmp/requirements-jupyter.txt
+
+  
