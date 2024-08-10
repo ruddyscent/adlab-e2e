@@ -1,5 +1,5 @@
 # FROM quay.io/jupyter/pytorch-notebook:cuda11-python-3.11.9
-FROM nvcr.io/nvidia/pytorch:24.07-py3
+FROM nvcr.io/nvidia/pytorch:24.05-py3
 
 ARG CARLA_VER=0.9.15
 
@@ -18,15 +18,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    apt-utils \
    git \
    ubuntu-mono \
-   fontconfig \
-   wget
+   fontconfig
 
 # Copy requirements file
 COPY jupyter-requirements.txt /tmp/
 
 # Change permissions of pip cache directory (if necessary)
-RUN mkdir -p /home/jovyan/.cache/pip \
- && chown -R root:root /home/jovyan/.cache/pip
+# RUN mkdir -p /home/jovyan/.cache/pip \
+#  && chown -R root:root /home/jovyan/.cache/pip
 
 # Install Python dependencies
 RUN pip install --upgrade pip \
@@ -60,23 +59,10 @@ RUN cd /opt \
 # 
 # RUN python3 -m easy_install --no-find-links --no-deps ${CARLA_ROOT}/PythonAPI/carla/dist/carla-${CARLA_VER}-py3.7-linux-x86_64.egg
 
-# RUN cd /opt \
-#  && wget -nv https://tiny.carla.org/carla-${CARLA_VER//./-}-linux \
-#  && mkdir carla \
-#  && tar xvfz carla-${CARLA_VER//./-}-linux -C carla \
-#  && rm carla-${CARLA_VER//./-}-linux
-
-COPY CARLA_${CARLA_VER}.tar.gz /opt/
-
-RUN cd /opt/ \
- && mkdir carla \
- && tar xfz CARLA_${CARLA_VER}.tar.gz -C carla \
- && rm CARLA_${CARLA_VER}.tar.gz
-
 ENV SCENARIO_RUNNER_ROOT=/opt/scenario_runner
 ENV LEADERBOARD_ROOT=/opt/leaderboard
 ENV PYTHONPATH=${SCENARIO_RUNNER_ROOT}:${PYTHONPATH}
 ENV PYTHONPATH=${LEADERBOARD_ROOT}:${PYTHONPATH}
 ENV CARLA_ROOT=/opt/carla
-# ENV PYTHONPATH=${PYTHONPATH}:${CARLA_ROOT}/PythonAPI/carla/dist/carla-${CARLA_VER}-py3.7-linux-x86_64.egg
-ENV PYTHONPATH=${PYTHONPATH}:${CARLA_ROOT}/PythonAPI/carla
+ENV PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/dist/carla-${CARLA_VER}-py3.7-linux-x86_64.egg:${PYTHONPATH}
+ENV PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla:${PYTHONPATH}
