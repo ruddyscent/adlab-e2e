@@ -6,7 +6,7 @@ ARG CARLA_VER=0.9.15
 # USER root
 
 # Let us install tzdata painlessly
-# ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
    neovim \
@@ -32,20 +32,19 @@ RUN mkdir -p /home/jovyan/.cache/pip \
 RUN pip install --upgrade pip \
  && /usr/local/bin/pip install -r /tmp/jupyter-requirements.txt
 
-# Scenario Runner
+# Install Scenario Runner
 COPY scenario_runner-requirements.txt /tmp/
 
 RUN pip3 install --upgrade pip \
  && /usr/local/bin/pip3 install -r /tmp/scenario_runner-requirements.txt
 
-# RUN cd /opt \
-#  && git clone -b leaderboard-2.0 --single-branch https://github.com/carla-simulator/scenario_runner.git
-
 RUN cd /opt \
- && git clone -b v${CARLA_VER} --single-branch https://github.com/carla-simulator/scenario_runner.git
+ && git clone -b leaderboard-2.0 --single-branch https://github.com/carla-simulator/scenario_runner.git
 
-# Leaderboard
+# https://github.com/carla-simulator/leaderboard/pull/182
+RUN sed -i 's/scenario.getchildren()/list(scenario)/g' /opt/scenario_runner/srunner/tools/scenario_parser.py
 
+# Install Leaderboard
 COPY leaderboard-requirements.txt /tmp/
 
 RUN pip3 install --upgrade pip \
@@ -54,24 +53,19 @@ RUN pip3 install --upgrade pip \
 RUN cd /opt \
  && git clone -b leaderboard-2.0 --single-branch https://github.com/carla-simulator/leaderboard.git
 
+# https://github.com/carla-simulator/leaderboard/pull/182
+RUN sed -i 's/scenario.getchildren()/list(scenario)/g' /opt/leaderboard/leaderboard/utils/route_parser.py
+
 # CARLA
-# RUN cd /opt \
-#  && git clone -b ${CARLA_VER} --single-branch https://github.com/carla-simulator/carla.git 
-# 
-# RUN python3 -m easy_install --no-find-links --no-deps ${CARLA_ROOT}/PythonAPI/carla/dist/carla-${CARLA_VER}-py3.7-linux-x86_64.egg
-
-# RUN cd /opt \
-#  && wget -nv https://tiny.carla.org/carla-${CARLA_VER//./-}-linux \
-#  && mkdir carla \
-#  && tar xvfz carla-${CARLA_VER//./-}-linux -C carla \
-#  && rm carla-${CARLA_VER//./-}-linux
-
-COPY CARLA_${CARLA_VER}.tar.gz /opt/
-
-RUN cd /opt/ \
- && mkdir carla \
- && tar xfz CARLA_${CARLA_VER}.tar.gz -C carla \
- && rm CARLA_${CARLA_VER}.tar.gz
+RUN cd /opt \
+ && git clone -b ${CARLA_VER} --single-branch https://github.com/carla-simulator/carla.git 
+ 
+#COPY CARLA_${CARLA_VER}.tar.gz /opt/
+#
+#RUN cd /opt/ \
+# && mkdir carla \
+# && tar xfz CARLA_${CARLA_VER}.tar.gz -C carla \
+# && rm CARLA_${CARLA_VER}.tar.gz
 
 ENV SCENARIO_RUNNER_ROOT=/opt/scenario_runner
 ENV LEADERBOARD_ROOT=/opt/leaderboard
