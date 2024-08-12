@@ -1,5 +1,14 @@
-# Created by https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,visualstudiocode,ros2,git
-# Edit at https://www.toptal.com/developers/gitignore?templates=python,jupyternotebooks,visualstudiocode,ros2,git
+ST-P3
+*.ckpt
+transfuser
+*.tar.gz
+run_leaderboard.sh
+
+# Created by https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,visualstudiocode,ros2,git,windows,macos,vim,dotenv
+# Edit at https://www.toptal.com/developers/gitignore?templates=python,jupyternotebooks,visualstudiocode,ros2,git,windows,macos,vim,dotenv
+
+### dotenv ###
+.env
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:
@@ -29,6 +38,39 @@ ipython_config.py
 
 # Remove previous ipynb_checkpoints
 #   git rm -r .ipynb_checkpoints/
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+### macOS Patch ###
+# iCloud generated files
+*.icloud
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
@@ -150,7 +192,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -229,6 +270,26 @@ qtcreator-*
 COLCON_IGNORE
 AMENT_IGNORE
 
+### Vim ###
+# Swap
+[._]*.s[a-v][a-z]
+!*.svg  # comment out if you don't need vector files
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Session
+Session.vim
+Sessionx.vim
+
+# Temporary
+.netrwhist
+# Auto-generated tag files
+tags
+# Persistent undo
+[._]*.un~
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
@@ -248,5 +309,30 @@ AMENT_IGNORE
 .history
 .ionide
 
-# End of https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,visualstudiocode,ros2,git
+### Windows ###
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
 
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# End of https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,visualstudiocode,ros2,git,windows,macos,vim,dotenv

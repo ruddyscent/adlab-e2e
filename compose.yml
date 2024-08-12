@@ -3,7 +3,7 @@ services:
     # image: carlasim/carla:0.9.15
     build: 
       context: .
-      dockerfile: Dockerfile-carla
+      dockerfile: carla.Dockerfile
     ipc: host
     privileged: true
     ulimits:
@@ -43,7 +43,7 @@ services:
     # image: quay.io/jupyter/pytorch-notebook:cuda11-python-3.11.9
     build: 
       context: .
-      dockerfile: Dockerfile-jupyter
+      dockerfile: jupyter.Dockerfile
     ipc: host
     privileged: true
     ulimits:
@@ -66,7 +66,7 @@ services:
     # image: osrf/ros:humble-simulation
     build:
       context: .
-      dockerfile: Dockerfile-ros
+      dockerfile: ros.Dockerfile
     ipc: host
     privileged: true
     volumes:
@@ -89,4 +89,4 @@ services:
     network_mode: "host"
     working_dir: /workspace
     tty: true
-    
+
