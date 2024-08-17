@@ -14,11 +14,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-utils 
 
 # Copy requirements file
-COPY ros-requirements.txt /tmp/
+COPY ros/requirements.txt /tmp/
 
 # Install Python dependencies
 RUN pip install --upgrade pip \
- && /usr/local/bin/pip install -r /tmp/ros-requirements.txt
+ && /usr/local/bin/pip install -r /tmp/requirements.txt
 
 # ROS Bridge Installation
 

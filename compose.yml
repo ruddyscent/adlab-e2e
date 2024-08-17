@@ -1,9 +1,8 @@
 services:
   carla:
-    # image: carlasim/carla:0.9.15
     build: 
       context: .
-      dockerfile: carla.Dockerfile
+      dockerfile: carla/Dockerfile
     ipc: host
     privileged: true
     ulimits:
@@ -39,11 +38,10 @@ services:
     working_dir: /workspace
     command: ["bash", "/home/carla/CarlaUE4.sh", "-carla-rpc-port=${CARLA_RPC_PORT:-2000}", "-carla-streaming-port=${CARLA_RPC_PORT:-2001}"]
 
-  jupyter:
-    # image: quay.io/jupyter/pytorch-notebook:cuda11-python-3.11.9
+  runner:
     build: 
       context: .
-      dockerfile: jupyter.Dockerfile
+      dockerfile: runner/Dockerfile
     ipc: host
     privileged: true
     ulimits:
@@ -63,10 +61,9 @@ services:
     command: jupyter notebook --ip=0.0.0.0 --port="${JUPYTER_PORT:-8888}" --no-browser --allow-root --NotebookApp.token="${JUPYTER_TOKEN:-letmein}" --NotebookApp.password="" --notebook-dir=/home
 
   ros:
-    # image: osrf/ros:humble-simulation
     build:
       context: .
-      dockerfile: ros.Dockerfile
+      dockerfile: ros/Dockerfile
     ipc: host
     privileged: true
     volumes:
