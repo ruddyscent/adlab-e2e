@@ -20,6 +20,7 @@ Create a `.env` file in the root directory of your repository to configure envir
 
 ```dotenv
 # .env file
+UID=1000 # User ID of the current user
 CARLA_GPU_DEVICES=0 # GPU devices assigned to the Carla container
 CARLA_RPC_PORT=2000 # Port number for Carla clients to connect (default: 2000)
 
