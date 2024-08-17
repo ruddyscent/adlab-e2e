@@ -1,7 +1,6 @@
-# FROM quay.io/jupyter/pytorch-notebook:cuda11-python-3.11.9
 FROM nvcr.io/nvidia/pytorch:24.07-py3
 
-ARG CARLA_VER=0.9.15
+ARG CARLA_VER=${CARLA_VER}
 
 # USER root
 
@@ -22,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    wget
 
 # Copy requirements file
-COPY jupyter-requirements.txt /tmp/
+COPY runner/jupyter-requirements.txt /tmp/
 
 # Change permissions of pip cache directory (if necessary)
 RUN mkdir -p /home/jovyan/.cache/pip \
@@ -33,7 +32,7 @@ RUN pip install --upgrade pip \
  && /usr/local/bin/pip install -r /tmp/jupyter-requirements.txt
 
 # Install Scenario Runner
-COPY scenario_runner-requirements.txt /tmp/
+COPY runner/scenario_runner-requirements.txt /tmp/
 
 RUN pip3 install --upgrade pip \
  && /usr/local/bin/pip3 install -r /tmp/scenario_runner-requirements.txt
@@ -45,7 +44,7 @@ RUN cd /opt \
 RUN sed -i 's/scenario.getchildren()/list(scenario)/g' /opt/scenario_runner/srunner/tools/scenario_parser.py
 
 # Install Leaderboard
-COPY leaderboard-requirements.txt /tmp/
+COPY runner/leaderboard-requirements.txt /tmp/
 
 RUN pip3 install --upgrade pip \
  && /usr/local/bin/pip3 install -r /tmp/leaderboard-requirements.txt

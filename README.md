@@ -7,7 +7,7 @@ This repository provides Docker containers for running end-to-end autonomous dri
 The repository includes three main containers, each serving a distinct purpose in the simulation pipeline:
 
 - **Carla**: Runs the [Carla simulator](https://carla.org/), a leading open-source simulator for autonomous driving research.
-- **Jupyter**: Hosts a [Jupyter Notebook](https://jupyter.org/) server configured with [PyTorch](https://pytorch.org/), [Scenario Runner](https://github.com/carla-simulator/scenario_runner), and [Leaderboard](https://leaderboard.carla.org/) modules to support development and evaluation of driving algorithms.
+- **Runner**: Hosts a [Jupyter Notebook](https://jupyter.org/) server configured with [PyTorch](https://pytorch.org/), [Scenario Runner](https://github.com/carla-simulator/scenario_runner), and [Leaderboard](https://leaderboard.carla.org/) modules to support development and evaluation of driving algorithms.
 - **ROS**: Contains [ROS](https://www.ros.org/), a version of the Robot Operating System, including the ROS Bridge to facilitate communication between Carla and ROS nodes.
 
 ## 2. Setup Instructions
@@ -31,11 +31,12 @@ JUPYTER_TOKEN=letmein # Authentication token for the Jupyter server
 
 ### 2.2 Carla Version
 
-To set the version of Carla, modify the `CARLA_VER` variable in both the `jupyter.Dockerfile` and `carla.Dockerfile`. Ensure that the `CARLA_VER` value is consistent across both files. The default version is `0.9.15`.
+To set the version of Carla, modify the `CARLA_VER` variables in both the `compose.yml`. Ensure that the `CARLA_VER` value is consistent across containers. The default version is `0.9.15`.
 
 ```dockerfile
-# Example: jupyter.Dockerfile and carla.Dockerfile
-ARG CARLA_VER=0.9.15
+# Example: compose.yml
+args:
+   - CARLA_VER=0.9.15
 ```
 
 ### 2.3 Additional Carla Maps
