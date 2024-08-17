@@ -4,6 +4,8 @@ FROM ros:${ROS_VER}
 ARG ROS_VER
 ENV ROS_VER ${ROS_VER}
 
+ENV CARLA_VER ${CARLA_VER}
+
 # Let us install tzdata painlessly
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -31,7 +33,7 @@ RUN mkdir -p /opt/carla-ros-bridge && cd /opt/carla-ros-bridge \
  && git clone --recurse-submodules -b leaderboard-2.0 --single-branch https://github.com/carla-simulator/ros-bridge.git src/ros-bridge
 
 RUN cd /opt/carla-ros-bridge/src/ros-bridge/carla_ros_bridge/src/carla_ros_bridge \
- && sed -i "s/0.9.13/0.9.15/g" CARLA_VERSION
+ && sed -i "s/0.9.13/${CARLA_VER}/g" CARLA_VERSION
 
 RUN source /opt/ros/${ROS_VER}/setup.bash \
  && cd /opt/carla-ros-bridge \

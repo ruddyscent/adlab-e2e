@@ -1,6 +1,6 @@
 FROM nvcr.io/nvidia/pytorch:24.07-py3
 
-ARG CARLA_VER=0.9.15
+ARG CARLA_VER=${CARLA_VER}
 
 # USER root
 

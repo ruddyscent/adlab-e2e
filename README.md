@@ -31,11 +31,12 @@ JUPYTER_TOKEN=letmein # Authentication token for the Jupyter server
 
 ### 2.2 Carla Version
 
-To set the version of Carla, modify the `CARLA_VER` variable in both the `runner/Dockerfile` and `runner/Dockerfile`. Ensure that the `CARLA_VER` value is consistent across both files. The default version is `0.9.15`.
+To set the version of Carla, modify the `CARLA_VER` variables in both the `compose.yml`. Ensure that the `CARLA_VER` value is consistent across containers. The default version is `0.9.15`.
 
 ```dockerfile
-# Example: jupyter.Dockerfile and carla.Dockerfile
-ARG CARLA_VER=0.9.15
+# Example: compose.yml
+args:
+   - CARLA_VER=0.9.15
 ```
 
 ### 2.3 Additional Carla Maps

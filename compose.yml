@@ -3,6 +3,8 @@ services:
     build: 
       context: .
       dockerfile: carla/Dockerfile
+      args:
+        - CARLA_VER=0.9.15
     ipc: host
     privileged: true
     ulimits:
@@ -42,6 +44,8 @@ services:
     build: 
       context: .
       dockerfile: runner/Dockerfile
+      args:
+        - CARLA_VER=0.9.15
     ipc: host
     privileged: true
     ulimits:
@@ -64,6 +68,8 @@ services:
     build:
       context: .
       dockerfile: ros/Dockerfile
+      args:
+        - CARLA_VER=0.9.15
     ipc: host
     privileged: true
     volumes:
