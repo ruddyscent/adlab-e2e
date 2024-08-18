@@ -1,4 +1,5 @@
 FROM nvcr.io/nvidia/pytorch:24.07-py3
+# FROM python:3.9.19
 
 ARG CARLA_VER=${CARLA_VER}
 
@@ -18,18 +19,32 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    git \
    ubuntu-mono \
    fontconfig \
-   wget
+   wget \
+   python3-opencv
 
-# Copy requirements file
-COPY runner/jupyter-requirements.txt /tmp/
+# RUN pip uninstall -y opencv \
+#  && apt-get install -y --no-install-recommends \
+#    python3-opencv
+   # python3-opencv \
+   # libgtk2.0-dev \
+   # pkg-config \
+   # x11-apps
+
+# RUN pip install --upgrade pip \
+#  && pip uninstall -y opencv \
+#  && pip install opencv-python==4.10.0.82
 
 # Change permissions of pip cache directory (if necessary)
 RUN mkdir -p /home/jovyan/.cache/pip \
  && chown -R root:root /home/jovyan/.cache/pip
 
+# Copy requirements file
+COPY runner/runner-requirements.txt /tmp/
+
 # Install Python dependencies
 RUN pip install --upgrade pip \
- && /usr/local/bin/pip install -r /tmp/jupyter-requirements.txt
+ && pip uninstall -y opencv \
+ && /usr/local/bin/pip install -r /tmp/runner-requirements.txt
 
 # Install Scenario Runner
 COPY runner/scenario_runner-requirements.txt /tmp/
