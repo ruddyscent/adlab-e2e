@@ -53,6 +53,16 @@ services:
       stack: 67108864
     volumes:
       - ./home:/home
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /dev/dri:/dev/dri
+      - ${HOME}:${HOME}
+      - /${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1 # Fix a bug with QT
+      - QT_QPA_PLATFORM=xcb
+      - SDL_VIDEODRIVER=x11
+      - NVIDIA_DRIVER_CAPABILITIES=all
     network_mode: "host"
     deploy:
       resources:
