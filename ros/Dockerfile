@@ -13,7 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     neovim \
     python3-pip \
     python-is-python3 \
-    apt-utils 
+    apt-utils
+RUN apt-get install -y --no-install-recommends \
+    ros-${ROS_VER}-desktop
 
 # Copy requirements file
 COPY ros/requirements.txt /tmp/

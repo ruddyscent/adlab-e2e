@@ -43,6 +43,8 @@ args:
 
 To enhance your simulation environment with additional maps, download the desired map files from [Carla's releases](https://github.com/carla-simulator/carla/releases) page. Place these files in the root directory of your repository.
 
+`wget -O AdditionalMaps_0.9.15.tar https://tiny.carla.org/additional-maps-0-9-15-linux`
+
 ## 3. Running the Simulation
 
 1. **Build Containers**: Use Docker Compose to build all containers by running:
