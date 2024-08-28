@@ -19,8 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    git \
    ubuntu-mono \
    fontconfig \
-   wget \
-   python3-opencv
+   wget 
+#   python3-opencv
 
 # RUN pip uninstall -y opencv \
 #  && apt-get install -y --no-install-recommends \
