@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/pytorch:24.07-py3
+FROM nvcr.io/nvidia/pytorch:24.08-py3
 # FROM python:3.9.19
 
 ARG CARLA_VER=${CARLA_VER}
