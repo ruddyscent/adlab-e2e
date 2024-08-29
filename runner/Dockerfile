@@ -19,8 +19,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    git \
    ubuntu-mono \
    fontconfig \
-   wget 
-#   python3-opencv
+   wget \
+   libgl1-mesa-glx \
+   x11-utils
 
 # RUN pip uninstall -y opencv \
 #  && apt-get install -y --no-install-recommends \
@@ -30,9 +31,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    # pkg-config \
    # x11-apps
 
-# RUN pip install --upgrade pip \
-#  && pip uninstall -y opencv \
-#  && pip install opencv-python==4.10.0.82
+# Install OpenCV with GUI support
+RUN pip install --upgrade pip \
+ && pip uninstall -y opencv \
+ && rm -rf /usr/local/lib/python3.10/dist-packages/cv2 \
+ && pip install opencv-python
 
 # Change permissions of pip cache directory (if necessary)
 RUN mkdir -p /home/jovyan/.cache/pip \
@@ -43,7 +46,7 @@ COPY runner/runner-requirements.txt /tmp/
 
 # Install Python dependencies
 RUN pip install --upgrade pip \
- && pip uninstall -y opencv \
+# && pip uninstall -y opencv \
  && /usr/local/bin/pip install -r /tmp/runner-requirements.txt
 
 # Install Scenario Runner
