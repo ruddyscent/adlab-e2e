@@ -37,7 +37,7 @@ services:
               device_ids: ['${CARLA_GPU_DEVICES}']
               capabilities: [compute, utility, graphics, display]
     working_dir: /workspace
-    command: ["bash", "/home/carla/CarlaUE4.sh", "-carla-rpc-port=${CARLA_RPC_PORT:-2000}", "-carla-streaming-port=${CARLA_RPC_PORT:-2001}"]
+    command: ["bash", "/home/carla/CarlaUE4.sh", "-carla-rpc-port=${CARLA_RPC_PORT:-2000}", "-carla-streaming-port=${CARLA_STREAMING_PORT:-2001}"]
 
   runner:
     build: 

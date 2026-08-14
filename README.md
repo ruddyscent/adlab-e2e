@@ -14,7 +14,22 @@ The repository includes three main containers, each serving a distinct purpose i
 
 Follow these steps to set up and run the simulation environment:
 
-### 2.1 Environment Configuration
+### 2.1 Prerequisites
+
+- Docker with Docker Compose, or Podman with a Compose provider
+- An NVIDIA driver and the NVIDIA Container Toolkit
+- Enough free disk space for the base images and the 6.9 GB additional-map archive
+
+Podman GPU access uses CDI. Confirm that the toolkit exposes the GPUs before
+building the stack:
+
+```bash
+nvidia-ctk cdi list
+```
+
+The output should include device names such as `nvidia.com/gpu=0`.
+
+### 2.2 Environment Configuration
 
 Create a `.env` file in the repository root to configure Compose:
 
@@ -23,15 +38,18 @@ Create a `.env` file in the repository root to configure Compose:
 UID=1000 # User ID of the current user (`id -u`)
 CARLA_GPU_DEVICES=0 # GPU devices assigned to the Carla container
 CARLA_RPC_PORT=2000 # Port number for Carla clients to connect (default: 2000)
+CARLA_STREAMING_PORT=2001 # Carla streaming port (default: 2001)
 
 JUPYTER_GPU_DEVICES=0 # GPU device assigned to the Jupyter container
 JUPYTER_PORT=8888     # Port number for the Jupyter server (default: 8888)
 JUPYTER_TOKEN=letmein # Authentication token for the Jupyter server
 ```
 
-### 2.2 Carla Version
+### 2.3 Carla Version
 
-To set the version of Carla, modify the `CARLA_VER` variables in both the `compose.yml`. Ensure that the `CARLA_VER` value is consistent across containers. The default version is `0.9.15`.
+To set the Carla version, modify every `CARLA_VER` build argument in
+`compose.yml`. Keep the value consistent across all containers. The default
+version is `0.9.15`.
 
 ```dockerfile
 # Example: compose.yml
@@ -39,9 +57,21 @@ args:
    - CARLA_VER=0.9.15
 ```
 
-### 2.3 Additional Carla Maps
+### 2.4 Additional Carla Maps
 
-To enhance your simulation environment with additional maps, download the desired map files from [Carla's releases](https://github.com/carla-simulator/carla/releases) page. Place these files in the root directory of your repository.
+The Carla image build requires the additional-map archive. Download it from
+[Carla's releases](https://github.com/carla-simulator/carla/releases) page and
+place it in the repository root using this exact name:
+
+```text
+AdditionalMaps_<CARLA_VER>.tar.gz
+```
+
+For the default version, the expected file is
+`AdditionalMaps_0.9.15.tar.gz`. The archive is approximately 6.9 GB, so the
+first build and final image-layer creation can take several minutes. Subsequent
+builds reuse the package, Python, and image-layer caches when their inputs have
+not changed.
 
 ## 3. Running the Simulation
 
@@ -78,6 +108,32 @@ nvidia-ctk cdi list
 
 If your distribution does not install a Compose provider for `podman compose`, install `podman-compose` and use the same `-f` arguments with that command.
 
+For example:
+
+```bash
+podman-compose -f compose.yml -f compose.podman.yml build
+podman-compose -f compose.yml -f compose.podman.yml up
+```
+
+### 3.3 Smoke Tests
+
+After building, these commands verify the Runner Python environment, CDI GPU
+access, and the ROS bridge installation:
+
+```bash
+podman compose -f compose.yml -f compose.podman.yml run --rm runner python -c \
+  "import carla, cv2, numba, numpy, torch; print(numpy.__version__, cv2.__version__); print(torch.from_numpy(numpy.array([1])).tolist())"
+
+podman compose -f compose.yml -f compose.podman.yml run --rm runner python -c \
+  "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"
+
+podman compose -f compose.yml -f compose.podman.yml run --rm ros /bin/bash -lc \
+  "source /opt/ros/humble/setup.bash && source /opt/carla-ros-bridge/install/setup.bash && ros2 pkg prefix carla_ros_bridge"
+```
+
+Replace `podman compose` with `podman-compose` if that is your installed
+Compose provider.
+
 ## 4. Development and Experimentation
 
 - **Carla Simulator**: The simulator is accessible on the port specified by `CARLA_RPC_PORT` and can be interacted with using Carla clients.
@@ -87,6 +143,7 @@ If your distribution does not install a Compose provider for `podman compose`, i
 ## 5. Troubleshooting
 
 - **GPU Configuration**: Ensure that the NVIDIA Container Toolkit is installed. Docker uses the device reservations in `compose.yml`; Podman uses the CDI devices in `compose.podman.yml`.
+- **Missing additional maps**: If the Carla image fails at the `COPY AdditionalMaps_...` step, verify that the archive is in the repository root and that its version matches every `CARLA_VER` build argument.
 - **Stale Podman CDI configuration**: If Podman reports a missing NVIDIA library after a driver update, regenerate the CDI specification with `sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml`, then retry the stack. Podman 4.9 cannot parse CDI 0.7 specifications produced by recent NVIDIA Container Toolkit releases; upgrade Podman or convert the generated specification to CDI 0.6 and remove its `additionalGids` entries.
 - **X11 Authentication**: The Compose configuration mounts `${HOME}/.Xauthority`. If your desktop session uses a different authentication file, create or update `${HOME}/.Xauthority` before starting the containers.
 - **Networking Issues**: If containers cannot communicate, check the network settings in your `compose.yml` and ensure that the correct ports are open and not blocked by firewalls.
