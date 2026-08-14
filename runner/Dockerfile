@@ -1,14 +1,17 @@
+# syntax=docker/dockerfile:1.7
 FROM nvcr.io/nvidia/pytorch:24.08-py3
 # FROM python:3.9.19
 
-ARG CARLA_VER=${CARLA_VER}
+ARG CARLA_VER=0.9.15
 
 # USER root
 
 # Let us install tzdata painlessly
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    apt-get update && apt-get install -y --no-install-recommends \
    neovim \
    python3-pip \
    python3-setuptools \
@@ -31,51 +34,37 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    # pkg-config \
    # x11-apps
 
-# Install OpenCV with GUI support
-RUN pip install --upgrade pip \
- && pip uninstall -y opencv \
+# Resolve and install all Python dependencies once. The cache survives rebuilds
+# without being committed to the resulting image layer.
+COPY runner/runner-requirements.txt \
+     runner/scenario_runner-requirements.txt \
+     runner/leaderboard-requirements.txt /tmp/requirements/
+
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python -m pip install --upgrade pip \
+ && python -m pip uninstall -y opencv \
  && rm -rf /usr/local/lib/python3.10/dist-packages/cv2 \
- && pip install opencv-python
-
-# Change permissions of pip cache directory (if necessary)
-RUN mkdir -p /home/jovyan/.cache/pip \
- && chown -R root:root /home/jovyan/.cache/pip
-
-# Copy requirements file
-COPY runner/runner-requirements.txt /tmp/
-
-# Install Python dependencies
-RUN pip install --upgrade pip \
-# && pip uninstall -y opencv \
- && /usr/local/bin/pip install -r /tmp/runner-requirements.txt
-
-# Install Scenario Runner
-COPY runner/scenario_runner-requirements.txt /tmp/
-
-RUN pip3 install --upgrade pip \
- && /usr/local/bin/pip3 install -r /tmp/scenario_runner-requirements.txt
+ && python -m pip install \
+      opencv-python \
+      -r /tmp/requirements/runner-requirements.txt \
+      -r /tmp/requirements/scenario_runner-requirements.txt \
+      -r /tmp/requirements/leaderboard-requirements.txt
 
 RUN cd /opt \
- && git clone -b leaderboard-2.0 --single-branch https://github.com/carla-simulator/scenario_runner.git
+ && git clone --depth 1 --filter=blob:none -b leaderboard-2.0 --single-branch https://github.com/carla-simulator/scenario_runner.git
 
 # https://github.com/carla-simulator/leaderboard/pull/182
 RUN sed -i 's/scenario.getchildren()/list(scenario)/g' /opt/scenario_runner/srunner/tools/scenario_parser.py
 
-# Install Leaderboard
-COPY runner/leaderboard-requirements.txt /tmp/
-
-RUN pip3 install --upgrade pip \
- && /usr/local/bin/pip3 install -r /tmp/leaderboard-requirements.txt
-
 RUN cd /opt \
- && git clone -b leaderboard-2.0 --single-branch https://github.com/carla-simulator/leaderboard.git
+ && git clone --depth 1 --filter=blob:none -b leaderboard-2.0 --single-branch https://github.com/carla-simulator/leaderboard.git
 
 # https://github.com/carla-simulator/leaderboard/pull/182
 RUN sed -i 's/scenario.getchildren()/list(scenario)/g' /opt/leaderboard/leaderboard/utils/route_parser.py
 
 # CARLA
 RUN cd /opt \
- && git clone -b ${CARLA_VER} --single-branch https://github.com/carla-simulator/carla.git 
+ && git clone --depth 1 --filter=blob:none -b ${CARLA_VER} --single-branch https://github.com/carla-simulator/carla.git
  
 #COPY CARLA_${CARLA_VER}.tar.gz /opt/
 #
@@ -84,10 +73,7 @@ RUN cd /opt \
 # && tar xfz CARLA_${CARLA_VER}.tar.gz -C carla \
 # && rm CARLA_${CARLA_VER}.tar.gz
 
-ENV SCENARIO_RUNNER_ROOT=/opt/scenario_runner
-ENV LEADERBOARD_ROOT=/opt/leaderboard
-ENV PYTHONPATH=${SCENARIO_RUNNER_ROOT}:${PYTHONPATH}
-ENV PYTHONPATH=${LEADERBOARD_ROOT}:${PYTHONPATH}
-ENV CARLA_ROOT=/opt/carla
-# ENV PYTHONPATH=${PYTHONPATH}:${CARLA_ROOT}/PythonAPI/carla/dist/carla-${CARLA_VER}-py3.7-linux-x86_64.egg
-ENV PYTHONPATH=${PYTHONPATH}:${CARLA_ROOT}/PythonAPI/carla
+ENV SCENARIO_RUNNER_ROOT=/opt/scenario_runner \
+    LEADERBOARD_ROOT=/opt/leaderboard \
+    CARLA_ROOT=/opt/carla \
+    PYTHONPATH=/opt/scenario_runner:/opt/leaderboard:/opt/carla/PythonAPI/carla

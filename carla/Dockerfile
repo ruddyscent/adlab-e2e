@@ -1,7 +1,8 @@
-ARG CARLA_VER=${CARLA_VER}
+# syntax=docker/dockerfile:1.7
+ARG CARLA_VER=0.9.15
 FROM docker.io/carlasim/carla:${CARLA_VER}
 
-ARG CARLA_VER=${CARLA_VER}
+ARG CARLA_VER
 ENV CARLA_ROOT=/home/carla
 
 USER root
@@ -9,7 +10,9 @@ USER root
 # Let us install tzdata painlessly
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    apt-get update && apt-get install -y --no-install-recommends \
     vulkan-utils \
     neovim \
     libjpeg8 \
@@ -26,4 +29,3 @@ COPY AdditionalMaps_${CARLA_VER}.tar.gz ${CARLA_ROOT}/Import/
 
 RUN ${CARLA_ROOT}/ImportAssets.sh \
  && rm ${CARLA_ROOT}/Import/AdditionalMaps_${CARLA_VER}.tar.gz
-

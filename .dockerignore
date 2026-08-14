@@ -1,0 +1,11 @@
+.git
+.gitignore
+.env
+.env.*
+home
+st-p3
+README.md
+LICENSE
+**/__pycache__
+**/*.pyc
+**/.DS_Store
