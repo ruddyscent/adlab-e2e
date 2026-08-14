@@ -30,15 +30,15 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 # ROS Bridge Installation
 
-SHELL ["/bin/bash", "-c"]
-
-RUN cd /opt/ros/${ROS_VER}/include/tf2_eigen/ \
- && cp tf2_eigen/* ./
-
 RUN mkdir -p /opt/carla-ros-bridge && cd /opt/carla-ros-bridge \
  && git clone --depth 1 --filter=blob:none --recurse-submodules --shallow-submodules \
       -b leaderboard-2.0 --single-branch \
       https://github.com/carla-simulator/ros-bridge.git src/ros-bridge
+
+# pcl_recorder finds tf2_eigen but omits it from the target dependencies,
+# preventing CMake from adding the exported include directory.
+RUN sed -i 's/pcl_conversions tf2 tf2_ros/pcl_conversions tf2 tf2_eigen tf2_ros/' \
+    /opt/carla-ros-bridge/src/ros-bridge/pcl_recorder/CMakeLists.txt
 
 RUN cd /opt/carla-ros-bridge/src/ros-bridge/carla_ros_bridge/src/carla_ros_bridge \
  && sed -i "s/0.9.13/${CARLA_VER}/g" CARLA_VERSION

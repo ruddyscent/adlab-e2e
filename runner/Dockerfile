@@ -41,11 +41,12 @@ COPY runner/runner-requirements.txt \
      runner/leaderboard-requirements.txt /tmp/requirements/
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-    python -m pip install --upgrade pip \
+    PIP_CONFIG_FILE=/dev/null python -m pip install --index-url https://pypi.org/simple --upgrade pip \
  && python -m pip uninstall -y opencv \
  && rm -rf /usr/local/lib/python3.10/dist-packages/cv2 \
- && python -m pip install \
-      opencv-python \
+ && PIP_CONFIG_FILE=/dev/null python -m pip install --index-url https://pypi.org/simple \
+      numpy==1.24.4 \
+      opencv-python==4.8.1.78 \
       -r /tmp/requirements/runner-requirements.txt \
       -r /tmp/requirements/scenario_runner-requirements.txt \
       -r /tmp/requirements/leaderboard-requirements.txt
