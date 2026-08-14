@@ -1,0 +1,18 @@
+services:
+  carla:
+    # Podman exposes NVIDIA GPUs through CDI. The deploy reservation in the
+    # base file remains in place for Docker Compose.
+    devices:
+      - nvidia.com/gpu=${CARLA_GPU_DEVICES:-0}
+    security_opt:
+      - label=disable
+
+  runner:
+    devices:
+      - nvidia.com/gpu=${JUPYTER_GPU_DEVICES:-0}
+    security_opt:
+      - label=disable
+
+  ros:
+    security_opt:
+      - label=disable
