@@ -97,4 +97,6 @@ Contributions are welcome! Please open an issue or submit a pull request to cont
 
 ## 7. License
 
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+The original configuration files and code in this repository are licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+Third-party software, container images, and assets used or downloaded by this project remain subject to their respective licenses and terms.
