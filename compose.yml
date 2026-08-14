@@ -15,13 +15,12 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /dev/dri:/dev/dri
       - ${HOME}:${HOME}
-      - /${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
+      - ${HOME}/.Xauthority:/root/.Xauthority:ro
       - /etc/group:/etc/group:ro
       - /etc/passwd:/etc/passwd:ro
       - /etc/shadow:/etc/shadow:ro
       - /etc/sudoers.d:/etc/sudoers.d:ro
-    user: ${UID}
-        # user: root
+    user: ${UID:-1000}
     environment:
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1 # Fix a bug with QT
@@ -56,7 +55,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /dev/dri:/dev/dri
       - ${HOME}:${HOME}
-      - /${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
+      - ${HOME}/.Xauthority:/root/.Xauthority:ro
     environment:
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1 # Fix a bug with QT
@@ -87,12 +86,12 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /dev/dri:/dev/dri
       - ${HOME}:${HOME}
-      - /${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
+      - ${HOME}/.Xauthority:/root/.Xauthority:ro
       - /etc/group:/etc/group:ro
       - /etc/passwd:/etc/passwd:ro
       - /etc/shadow:/etc/shadow:ro
       - /etc/sudoers.d:/etc/sudoers.d:ro
-    user: ${UID}
+    user: ${UID:-1000}
     environment:
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1 # Fix a bug with QT
@@ -102,4 +101,3 @@ services:
     network_mode: "host"
     working_dir: /workspace
     tty: true
-

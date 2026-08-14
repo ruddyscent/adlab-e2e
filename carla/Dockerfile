@@ -1,5 +1,5 @@
 ARG CARLA_VER=${CARLA_VER}
-FROM carlasim/carla:${CARLA_VER}
+FROM docker.io/carlasim/carla:${CARLA_VER}
 
 ARG CARLA_VER=${CARLA_VER}
 ENV CARLA_ROOT=/home/carla
